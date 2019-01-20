@@ -1,6 +1,17 @@
 #!/usr/bin/env perl
 use strict;
 use warnings;
+require File::Temp;
+
+my $job_id            = '';
+my $part_id           = '';
+my $job_reset         = '';
+my $ideal_cycle_time  = '';
+my $takt_time         = '';
+my $scale_factor      = '';
+my $goal_value        = '';
+my $count_of_barcodes = '';
+my $filename          = '';
 
 
 sub get_form_data {
@@ -36,22 +47,7 @@ sub get_form_data {
 }
 
 
-my %form_data = get_form_data();
-my $method = $ENV{'REQUEST_METHOD'};
-if ($method eq 'GET') {
-    my $job_id           = $form_data{'job_id'};
-    my $part_id          = $form_data{'part_id'};
-	my $job_reset        = $form_data{'job_reset'};
-	my $ideal_cycle_time = $form_data{'ideal_cycle_time'};
-	my $takt_time        = $form_data{'takt_time'};
-	my $scale_factor     = $form_data{'scale_factor'};
-	my $goal_value       = $form_data{'goal_value'};
-
-	# print "Content-type: text/utf-8\n\n";
-	# print "order_no = $order_no\n";
-	# print "output = $output\n";
-
-	print "Content-Type: text/html\n\n";
+sub print_variables {
     print "job_id = $job_id<br>\n";
     print "part_id = $part_id<br>\n";
     print "job_reset = $job_reset<br>\n";
@@ -59,4 +55,62 @@ if ($method eq 'GET') {
     print "takt_time = $takt_time<br>\n";
     print "scale_factor = $scale_factor<br>\n";
     print "goal_value = $goal_value<br>\n";
+    print "count_of_barcodes = $count_of_barcodes<br>\n";
+    print "filename = $filename<br>\n";
+}
+
+
+sub print_barcodes {
+	print <<HTML
+	<html>
+	<body>
+		<table cellpadding="0"
+		       cellspacing="0"
+		       style="margin-top: 50px; margin-left: 100px;">
+HTML
+;
+
+	for my $i (1..$count_of_barcodes) {
+		print <<HTML
+			<tr>
+				<td style="border: 1px solid black;">
+					<img src="/barcodes/$filename" />
+				</td>
+			</tr>
+HTML
+	}
+
+
+	print <<HTML
+		</table>
+	</body>
+	</html>
+HTML
+}
+
+
+my %form_data = get_form_data();
+my $method = $ENV{'REQUEST_METHOD'};
+if ($method eq 'GET') {
+    $job_id            = $form_data{'job_id'};
+    $part_id           = $form_data{'part_id'};
+	$job_reset         = $form_data{'job_reset'};
+	$ideal_cycle_time  = $form_data{'ideal_cycle_time'};
+	$takt_time         = $form_data{'takt_time'};
+	$scale_factor      = $form_data{'scale_factor'};
+	$goal_value        = $form_data{'goal_value'};
+	$count_of_barcodes = $form_data{'count_of_barcodes'};
+    (undef, $filename) = File::Temp::tempfile('barcodeXXXXXX', DIR => '../barcodes', SUFFIX => '.png', OPEN => 0);
+
+	print "Content-Type: text/html\n\n";
+
+	# print_variables();
+
+    # <SOH> 01h
+    # <STX> 02h
+	# <ETX> 03h
+	my $message = "$job_id;$part_id;$job_reset;$ideal_cycle_time;$takt_time;$scale_factor;$goal_value";
+    system("../.venv/bin/pdf417gen encode '\\01\\02$message\\03' -o $filename");
+
+    print_barcodes();
 }
