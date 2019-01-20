@@ -1,0 +1,199 @@
+﻿<!doctype html>
+<html>
+<head>
+    <meta content="IE=11.0000" http-equiv="X-UA-Compatible">
+    <meta charset="utf-8">           
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">               
+    <meta name="viewport" content="width=device-width, initial-scale=1">             
+  
+    <title>Fresh Grill Quickview Portal</title>
+    <link href="/favicon.ico" rel="icon" type="image/ico">
+    <!-- Bootstrap -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/normalize.css" rel="stylesheet">
+    <link href="/css/cutegrids.css" rel="stylesheet">
+    <link href="/css/print.min.css" rel="stylesheet">
+
+    <!-- Include all compiled plugins (below), or include individual files as needed --> 
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/print.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/vue.js"></script>
+    <script src="/js/axios.min.js"></script>
+    <!-- Minified version of `es6-promise-auto` below. -->
+    <script src="/js/es6-promise.min.js"></script>
+    <script src="/js/es6-promise.auto.min.js"></script> 
+
+    <style>
+        th, td {
+            padding: 5px;
+            text-align: left;
+        }
+
+        .odd {
+            background-color:#ddd
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container" id="app">
+        <!-- header class="header" -->
+        <nav class="navbar navbar-default">
+          <div class="container-fluid">
+            <div class="brand-logo text-center navbar-nav navbar-left">
+                <a href="/">
+            	     <img alt="logo" src="/img/logo.png">
+                </a>
+            </div>
+          </div>
+        </nav>
+        <!-- /header -->
+
+        <div class="row">
+          	<div class="cute-12-tablet">
+              	<h1 style="width:200px; margin:10px;">Barcode:</h1>
+
+              	<form action="" method="get">
+                    <table>
+                        <tr>
+                            <td>
+                                Job ID
+                            </td>
+                            <td>
+                                <input type="text"
+                                   class="form-control"
+                                   v-model="job_id" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Part ID
+                            </td>
+                            <td>
+                                <input type="text"
+                                   class="form-control"
+                                   v-model="part_id" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Job Reset
+                            </td>
+                            <td>
+                                <input type="text"
+                                   class="form-control"
+                                   v-model="job_reset" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Ideal Cycle Time
+                            </td>
+                            <td>
+                                <input type="text"
+                                   class="form-control"
+                                   v-model="ideal_cycle_time" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Takt Time
+                            </td>
+                            <td>
+                                <input type="text"
+                                   class="form-control"
+                                   v-model="takt_time" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Scale Factor
+                            </td>
+                            <td>
+                                <input type="text"
+                                   class="form-control"
+                                   v-model="scale_factor" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Goal Value
+                            </td>
+                            <td>
+                                <input type="text"
+                                   class="form-control"
+                                   v-model="goal_value" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                        		<input type="button"
+                                   class="form-control btn-success"
+                                   style="width:300px; margin:10px;"
+                                   @click="download_invoice()"
+                                   value="Generate" />
+                            </td>
+                        </tr>
+                   </table>
+              	</form>
+            </div>
+        </div>
+        <footer class="text-center"
+                style="position: absolute;
+                       left: 0;
+                       bottom: 0;
+                       width: 100%;">
+            <div class="row">
+              <p class="copyright">© Copyright FreshGrillFoods.com 2019</p>
+            </div>
+        </footer>
+    </div>
+
+    <script type="text/javascript">
+        function verify_number(t) {
+            if (t.value.match(/^(\d){1,10}$/g)) {
+                t.setCustomValidity('')
+                t.style.borderColor = ''
+                t.style.boxShadow = ''
+            } else {
+                t.setCustomValidity('Wrong number')
+                t.style.borderColor = '#FF0000'
+                t.style.boxShadow = 'inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(255, 0, 0, 0.6)'
+            }
+        }
+    </script>
+
+    <script type="text/javascript">
+        var app = new Vue({
+            el: '#app',
+            data: function() {
+                return {
+                    orders: [],
+                    job_id: '',
+                    part_id: '',
+                    job_reset: '',
+                    ideal_cycle_time: '',
+                    takt_time: '',
+                    scale_factor: '',
+                    goal_value: ''
+                }
+            },
+            methods: {
+                download_invoice: function() {
+                    var url='/cgi/app.pl?order=' + this.order + '&invoice=2&output=file'
+                    document.location.href = url
+                },
+                print_invoice: function() {
+                    var url='/cgi/app.pl?order=' + this.order + '&invoice=2&output=pdf'
+                    printJS(url)
+                }
+            },
+            mounted: function() {
+            }
+        })
+    </script>
+</body>
+</html>
