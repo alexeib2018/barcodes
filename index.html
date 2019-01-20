@@ -133,7 +133,7 @@
                         		<input type="button"
                                    class="form-control btn-success"
                                    style="width:300px; margin:10px;"
-                                   @click="download_invoice()"
+                                   @click="generate_barcode()"
                                    value="Generate" />
                             </td>
                         </tr>
@@ -171,7 +171,6 @@
             el: '#app',
             data: function() {
                 return {
-                    orders: [],
                     job_id: '',
                     part_id: '',
                     job_reset: '',
@@ -182,13 +181,15 @@
                 }
             },
             methods: {
-                download_invoice: function() {
-                    var url='/cgi/app.pl?order=' + this.order + '&invoice=2&output=file'
+                generate_barcode: function() {
+                    var url='/cgi/app.pl?job_id=' + this.job_id
+                    url += '&part_id=' + this.part_id
+                    url += '&job_reset=' + this.job_reset
+                    url += '&ideal_cycle_time=' + this.ideal_cycle_time
+                    url += '&takt_time=' + this.takt_time
+                    url += '&scale_factor=' + this.scale_factor
+                    url += '&goal_value=' + this.goal_value
                     document.location.href = url
-                },
-                print_invoice: function() {
-                    var url='/cgi/app.pl?order=' + this.order + '&invoice=2&output=pdf'
-                    printJS(url)
                 }
             },
             mounted: function() {
