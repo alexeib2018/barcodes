@@ -129,6 +129,16 @@
                             </td>
                         </tr>
                         <tr>
+                            <td>
+                                Count of barcodes
+                            </td>
+                            <td>
+                                <input type="text"
+                                   class="form-control"
+                                   v-model="count_of_barcodes" />
+                            </td>
+                        </tr>
+                        <tr>
                             <td colspan="2">
                         		<input type="button"
                                    class="form-control btn-success"
@@ -177,7 +187,8 @@
                     ideal_cycle_time: '',
                     takt_time: '',
                     scale_factor: '',
-                    goal_value: ''
+                    goal_value: '',
+                    count_of_barcodes: ''
                 }
             },
             methods: {
@@ -189,6 +200,7 @@
                     url += '&takt_time=' + this.takt_time
                     url += '&scale_factor=' + this.scale_factor
                     url += '&goal_value=' + this.goal_value
+                    url += '&count_of_barcodes=' + this.count_of_barcodes
                     document.location.href = url
                 }
             },
