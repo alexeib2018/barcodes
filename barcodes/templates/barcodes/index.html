@@ -1,0 +1,213 @@
+﻿{% load static %}
+<!doctype html>
+<html>
+<head>
+    <meta content="IE=11.0000" http-equiv="X-UA-Compatible">
+    <meta charset="utf-8">           
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">               
+    <meta name="viewport" content="width=device-width, initial-scale=1">             
+  
+    <title>Fresh Grill Quickview Portal</title>
+    <link href="/favicon.ico" rel="icon" type="image/ico">
+    <!-- Bootstrap -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/normalize.css' %}" rel="stylesheet">
+    <link href="{% static 'css/cutegrids.css' %}" rel="stylesheet">
+    <link href="{% static 'css/print.min.css' %}" rel="stylesheet">
+
+    <!-- Include all compiled plugins (below), or include individual files as needed --> 
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/print.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/vue.js' %}"></script>
+    <script src="{% static 'js/axios.min.js' %}"></script>
+    <!-- Minified version of `es6-promise-auto` below. -->
+    <script src="{% static 'js/es6-promise.min.js' %}"></script>
+    <script src="{% static 'js/es6-promise.auto.min.js' %}"></script>
+
+    <style>
+        th, td {
+            padding: 5px;
+            text-align: left;
+        }
+
+        .odd {
+            background-color:#ddd
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container" id="app">
+        <!-- header class="header" -->
+        <nav class="navbar navbar-default">
+          <div class="container-fluid">
+            <div class="brand-logo text-center navbar-nav navbar-left">
+                <a href="/">
+            	     <img alt="logo" src="{% static '/img/logo.png' %}">
+                </a>
+            </div>
+          </div>
+        </nav>
+        <!-- /header -->
+
+        <div class="row">
+          	<div class="cute-12-tablet">
+              	<h1 style="width:200px; margin:10px;">Barcode:</h1>
+
+              	<form action="" method="get">
+                    <table>
+                        <tr>
+                            <td>
+                                Job ID
+                            </td>
+                            <td>
+                                <input type="text"
+                                   class="form-control"
+                                   v-model="job_id" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Part ID
+                            </td>
+                            <td>
+                                <input type="text"
+                                   class="form-control"
+                                   v-model="part_id" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Job Reset
+                            </td>
+                            <td>
+                                <input type="text"
+                                   class="form-control"
+                                   v-model="job_reset" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Ideal Cycle Time
+                            </td>
+                            <td>
+                                <input type="text"
+                                   class="form-control"
+                                   v-model="ideal_cycle_time" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Takt Time
+                            </td>
+                            <td>
+                                <input type="text"
+                                   class="form-control"
+                                   v-model="takt_time" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Scale Factor
+                            </td>
+                            <td>
+                                <input type="text"
+                                   class="form-control"
+                                   v-model="scale_factor" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Goal Value
+                            </td>
+                            <td>
+                                <input type="text"
+                                   class="form-control"
+                                   v-model="goal_value" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Count of barcodes
+                            </td>
+                            <td>
+                                <input type="text"
+                                   class="form-control"
+                                   v-model="count_of_barcodes" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                        		<input type="button"
+                                   class="form-control btn-success"
+                                   style="width:300px; margin:10px;"
+                                   @click="generate_barcode()"
+                                   value="Generate" />
+                            </td>
+                        </tr>
+                   </table>
+              	</form>
+            </div>
+        </div>
+        <footer class="text-center"
+                style="position: absolute;
+                       left: 0;
+                       bottom: 0;
+                       width: 100%;">
+            <div class="row">
+              <p class="copyright">© Copyright FreshGrillFoods.com, 2019</p>
+            </div>
+        </footer>
+    </div>
+
+    <script type="text/javascript">
+        function verify_number(t) {
+            if (t.value.match(/^(\d){1,10}$/g)) {
+                t.setCustomValidity('')
+                t.style.borderColor = ''
+                t.style.boxShadow = ''
+            } else {
+                t.setCustomValidity('Wrong number')
+                t.style.borderColor = '#FF0000'
+                t.style.boxShadow = 'inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(255, 0, 0, 0.6)'
+            }
+        }
+    </script>
+
+    <script type="text/javascript">
+        var app = new Vue({
+            el: '#app',
+            data: function() {
+                return {
+                    job_id: '',
+                    part_id: '',
+                    job_reset: '',
+                    ideal_cycle_time: '',
+                    takt_time: '',
+                    scale_factor: '',
+                    goal_value: '',
+                    count_of_barcodes: ''
+                }
+            },
+            methods: {
+                generate_barcode: function() {
+                    var url='/cgi/app.pl?job_id=' + this.job_id
+                    url += '&part_id=' + this.part_id
+                    url += '&job_reset=' + this.job_reset
+                    url += '&ideal_cycle_time=' + this.ideal_cycle_time
+                    url += '&takt_time=' + this.takt_time
+                    url += '&scale_factor=' + this.scale_factor
+                    url += '&goal_value=' + this.goal_value
+                    url += '&count_of_barcodes=' + this.count_of_barcodes
+                    document.location.href = url
+                }
+            },
+            mounted: function() {
+            }
+        })
+    </script>
+</body>
+</html>
