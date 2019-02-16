@@ -1,0 +1,17 @@
+<html>
+<body>
+    <table cellpadding="0"
+           cellspacing="0"
+           style="margin-top: 50px; margin-left: 100px;">
+
+        {% for item in count %}
+			<tr>
+				<td style="border: 1px solid black;">
+					<img src="/barcodes/png?text={{ barcode }}" />
+				</td>
+			</tr>
+        {% endfor %}
+
+    </table>
+</body>
+</html>
