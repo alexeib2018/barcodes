@@ -61,6 +61,16 @@
                     <table>
                         <tr>
                             <td>
+                                Job Reset
+                            </td>
+                            <td>
+                                <input type="text"
+                                   class="form-control"
+                                   v-model="job_reset" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
                                 Job ID
                             </td>
                             <td>
@@ -77,16 +87,6 @@
                                 <input type="text"
                                    class="form-control"
                                    v-model="part_id" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Job Reset
-                            </td>
-                            <td>
-                                <input type="text"
-                                   class="form-control"
-                                   v-model="job_reset" />
                             </td>
                         </tr>
                         <tr>
@@ -111,22 +111,42 @@
                         </tr>
                         <tr>
                             <td>
-                                Scale Factor
+                                Target Set Time
                             </td>
                             <td>
                                 <input type="text"
                                    class="form-control"
-                                   v-model="scale_factor" />
+                                   v-model="target_set_time" />
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                Goal Value
+                                Scale Factor 1
                             </td>
                             <td>
                                 <input type="text"
                                    class="form-control"
-                                   v-model="goal_value" />
+                                   v-model="scale_factor1" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Scale Factor 2
+                            </td>
+                            <td>
+                                <input type="text"
+                                   class="form-control"
+                                   v-model="scale_factor2" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Executes Program
+                            </td>
+                            <td>
+                                <input type="text"
+                                   class="form-control"
+                                   v-model="executes_program" />
                             </td>
                         </tr>
                         <tr>
@@ -182,25 +202,30 @@
             el: '#app',
             data: function() {
                 return {
-                    job_id: '',
-                    part_id: '',
-                    job_reset: '',
-                    ideal_cycle_time: '',
-                    takt_time: '',
-                    scale_factor: '',
-                    goal_value: '',
-                    count_of_barcodes: ''
+                    job_reset: '2',
+                    job_id: '99571',
+                    part_id: '92-0912',
+                    ideal_cycle_time: '10',
+                    takt_time: '10',
+                    target_set_time: '10',
+                    scale_factor1: '1:1',
+                    scale_factor2: '2:1',
+                    executes_program: '900',
+                    count_of_barcodes: '3'
                 }
             },
             methods: {
                 generate_barcode: function() {
-                    var url='/cgi/app.pl?job_id=' + this.job_id
+                    var url='/barcodes/generate?'
+                    url += 'job_reset=' + this.job_reset
+                    url += '&job_id=' + this.job_id
                     url += '&part_id=' + this.part_id
-                    url += '&job_reset=' + this.job_reset
                     url += '&ideal_cycle_time=' + this.ideal_cycle_time
                     url += '&takt_time=' + this.takt_time
-                    url += '&scale_factor=' + this.scale_factor
-                    url += '&goal_value=' + this.goal_value
+                    url += '&target_set_time=' + this.target_set_time
+                    url += '&scale_factor1=' + this.scale_factor1
+                    url += '&scale_factor2=' + this.scale_factor2
+                    url += '&executes_program=' + this.executes_program
                     url += '&count_of_barcodes=' + this.count_of_barcodes
                     document.location.href = url
                 }
